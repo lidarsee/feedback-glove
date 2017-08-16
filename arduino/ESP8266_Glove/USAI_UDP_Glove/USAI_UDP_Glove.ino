@@ -1,25 +1,9 @@
-/*This is an example of the EasyTransfer Library 2way communications.
-
-The sketch is for the Arduino with a potentiometer attached to analog pin 0.
-
-This other Arduino has the servo attached to pin 9.
-Both have a putton attached to pin 12 and output a status using the LED on pin 13.
-
-The idea is each arduino will read the status of the button attached to it, and send it
-to the other Arduino, which will toggle it's LED based on the others button. The button
-should connect pin 12 to ground when pushed.
-
-And the Arduino with the potentiometer will send it's value to the one with the servo.
-The servo will move to the position based on the potentiometer.
+/*This is an example of the
 */
 
-
-//#include <Ethernet.h>
-//#include <EthernetUdp.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <WiFiUDP.h>
-
 
 #include "usai.h"
 
@@ -27,8 +11,8 @@ The servo will move to the position based on the potentiometer.
 WiFiUDP Udp;
 
 // wifi connection variables
-const char *ssid =	"Luftnetz_2GHz";
-const char *pass =	"achtung!warnschuss!";
+const char *ssid =	"YourSSIDHere";
+const char *pass =	"YourPSKHere";
 
 const char *ssidAP =  "FZI_Lidarsee";
 const char *passAP =  "12345678";
@@ -68,7 +52,10 @@ int BatteryVoltage = 0;
 int TestValue = 0;
 
 //start the library, pass in the data details and the name of the serial port. Can be Serial, Serial1, Serial2, etc.
+//for network use &Udp
 usai Sensors(&Udp);
+unsigned int localPort = 8888;      // local port to listen on
+
 
 uValue V1("Vibramotor1",Control,&Vibramotor1);
 uValue V2("Vibramotor2",Control,&Vibramotor2);
@@ -78,9 +65,6 @@ uValue V5("Vibramotor5",Control,&Vibramotor5);
 uValue V6("Vibramotor6",Control,&Vibramotor6);
 
 uValue V7("BatteryVoltage",Config,&BatteryVoltage);
-
-
-unsigned int localPort = 8888;      // local port to listen on
 
 void setup(){
 
@@ -104,35 +88,14 @@ void setup(){
 	Serial.println("");
 	Serial.println("StartWifi");
 
-	
-	// Initialise wifi connection
-//  WiFi.begin(ssid, pass);
-//  int timeout = 0;
-//	while (WiFi.status() != WL_CONNECTED) {
-//		delay(500);
-//		Serial.print(".");
-//    timeout++;
-//    if (timeout > 50)
-//    {
-//      delay(100);
-//      break;
-//    }
-//	}
-
-  IPAddress myIP = WiFi.localIP();
-//
-//  // if connection fails open soft AP
-//  if(WiFi.status() != WL_CONNECTED)
-//  {
-    WiFi.mode(WIFI_AP);
-    Serial.println("No WiFi found open SoftAP");
-    Serial.print("SSID:");Serial.println(ssidAP);
-    Serial.print("Pass:");Serial.println(passAP);
-    WiFi.softAP(ssidAP, passAP);
-    Serial.print("AP IP address: ");
-    myIP = WiFi.softAPIP();
-    Serial.println(myIP);
-//  }
+  WiFi.mode(WIFI_AP);
+  Serial.println("No WiFi found open SoftAP");
+  Serial.print("SSID:");Serial.println(ssidAP);
+  Serial.print("Pass:");Serial.println(passAP);
+  WiFi.softAP(ssidAP, passAP);
+  Serial.print("AP IP address: ");
+  IPAddress myIP = WiFi.softAPIP();
+  Serial.println(myIP);
 
 	Serial.println("");
 	Udp.begin(localPort);
@@ -156,7 +119,6 @@ void loop(){
 	
 BatteryVoltage = analogRead(A0);
 Sensors.processSensorData();
-
 analogWrite(Motor1Pin, Vibramotor1);
 analogWrite(Motor2Pin, Vibramotor2);
 //analogWrite(Motor3Pin, Vibramotor3);

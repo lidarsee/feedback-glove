@@ -12,18 +12,14 @@
 #include <WiFiClient.h>
 #include <WiFiUDP.h>
 
-
-#include "usai.h"
-
+#include "usai.h"   // download from https://github.com/4ndreas/USAI
+// A GUI for interacting can be downloaded from https://github.com/4ndreas/USAI_GUI
 
 WiFiUDP Udp;
 
 // wifi connection variables
-//const char *ssid =	"YourSSIDHere";
-//const char *pass =	"YourPSKHere";
-
-const char *ssid =  "Luftnetz_2GHz";
-const char *pass =  "achtung!warnschuss!";
+const char *ssid =	"YourSSIDHere";
+const char *pass =	"YourPSKHere";
 
 boolean wifiConnected = false;
 boolean udpConnected = false;
@@ -107,11 +103,15 @@ void setup(){
   Serial.println ("Wifi Connected");
   
   IPAddress myIP = WiFi.localIP();
-  Serial.println(myIP);
-	Serial.println("");
-	Udp.begin(localPort);
-	Serial.printf("Now listening at IP %s, UDP port %d\n", myIP.toString(), localPort);
+  Udp.begin(localPort);
 
+	
+	
+  Serial.print("local IP is: ");  
+  Serial.println(myIP);
+  Serial.print("UDP USAI port is: ");
+  Serial.println(localPort);
+  Serial.println("");
   delay(100);
 
 	Sensors.begin();
