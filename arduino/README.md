@@ -1,4 +1,4 @@
-# lidarsee feedback glove Arduino Scetch
+# lidarsee feedback glove Arduino Sketch
 ## 
 
 Arduino Sketch for the Hardware
@@ -7,6 +7,6 @@ Arduino Sketch for the Hardware
 - USAI_UDP_Glove uses a Soft AP
 - USAI_UDP_WiFi connects to a Wifi 
 
+Set the Arduino IDE to:
 
-Set the arduino ide to:
 ![adrusettings](../docs/images/adrusettings.jpg)
