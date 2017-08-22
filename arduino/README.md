@@ -5,4 +5,4 @@
 Arduino Sketch for the Hardware
 
 Set the arduino ide to:
-![adrusettings](docs/images/adrusettings.jpg)
+![adrusettings](./docs/images/adrusettings.jpg)
