@@ -18,35 +18,24 @@
 WiFiUDP Udp;
 
 // wifi connection variables
-//const char *ssid =	"YourSSIDHere";
-//const char *pass =	"YourPSKHere";
-
-const char *ssid =  "Luftnetz_2GHz";
-const char *pass =  "achtung!warnschuss!";
+const char *ssid =	"YourSSIDHere";
+const char *pass =	"YourPSKHere";
 
 boolean wifiConnected = false;
 boolean udpConnected = false;
 
+const char *ssidAP =  "FZI_Lidarsee";
+const char *passAP =  "12345678";
+
 // All in WeMos D1 mini Pro Dx Notation
-// LED D4
-
-// Motor1 D1
-// Motor1 D2
-// Motor1 D3
-// Motor1 D5
-// Motor1 D6
-// Motor1 D7
-
-
 const int LEDPIN = D4;
 
-const int Motor1Pin = D6; // Daumen
 const int Motor2Pin = D1; // Zeigefinger
 const int Motor3Pin = D2; // Mittelfinger
-
-const int Motor4Pin = D5; // Ringfinger
-const int Motor5Pin = D3; // Kleinerfinger
-const int Motor6Pin = D7; // not used
+const int Motor6Pin = D3; // not used
+const int Motor4Pin = D6; // Ringfinger
+const int Motor5Pin = D5; // Kleinerfinger
+const int Motor1Pin = D7; // Daumen
 
 int Vibramotor1 = 0;
 int Vibramotor2 = 0;
@@ -59,15 +48,13 @@ int BatteryDigit = 0;
 const float BatteryBittoV = 0.00679; //  V/bit
 float BatteryVoltage = 0;
 
-int TestValue = 0;
-
 int MasterValue = 500;
 
-boolean Finger1 = true;
-boolean Finger2 = true;
-boolean Finger3 = true;
-boolean Finger4 = true;
-boolean Finger5 = true;
+boolean Finger1 = false;
+boolean Finger2 = false;
+boolean Finger3 = false;
+boolean Finger4 = false;
+boolean Finger5 = false;
 
 //start the library, pass in the data details and the name of the serial port. Can be Serial, Serial1, Serial2, etc.
 //for network use &Udp
@@ -116,22 +103,48 @@ void setup(){
 	Serial.println("");
 	Serial.println("StartWifi");
 
+  Serial.println("Try to connect to:");
+  Serial.print("SSID:");Serial.println(ssid);
+  Serial.print("Pass:");Serial.println(pass);
+  Serial.println("Try for 30 secondes than open soft AP");
+
+  int timeoutCounter = 0;
   // Initialise wifi connection
 	WiFi.begin(ssid, pass);
-
 	while (WiFi.status() != WL_CONNECTED) {
 		delay(500);
 		Serial.print(".");
+    wifiConnected = true;
+    timeoutCounter++;
+    if(timeoutCounter > 60)
+    {
+      wifiConnected = false;
+      break;
+    }
+    
 	}
-  Serial.println ("");
-  Serial.println ("Wifi Connected");
   
-  IPAddress myIP = WiFi.localIP();
+  Serial.println ("");
+  IPAddress myIP;
+  if(wifiConnected)
+  {
+    Serial.println ("Wifi Connected");
+    myIP = WiFi.localIP();
+    Serial.print("local IP is: "); 
+  }
+  else  // open soft AP 
+  {
+    WiFi.mode(WIFI_AP);
+    Serial.println("No WiFi found open SoftAP");
+    Serial.print("SSID:");Serial.println(ssidAP);
+    Serial.print("Pass:");Serial.println(passAP);
+    WiFi.softAP(ssidAP, passAP);
+    Serial.print("AP IP address: ");
+    myIP = WiFi.softAPIP();    
+  }
+  
   Udp.begin(localPort);
-
 	
-	
-  Serial.print("local IP is: ");  
   Serial.println(myIP);
   Serial.print("UDP USAI port is: ");
   Serial.println(localPort);
@@ -161,7 +174,7 @@ void setup(){
 
 bool ledtoggle = false;
 int ledcounter = 0;
-
+int ledBlinkDelay = 100;
 void loop(){
 	
 // get Battery Voltage
@@ -172,12 +185,28 @@ BatteryVoltage =  BatteryDigit * BatteryBittoV;
 
 Sensors.processSensorData();
 
+if(BatteryVoltage < 3.2)
+{
+  // shutdown
+  Vibramotor1 = 0;
+  Vibramotor2 = 0;
+  Vibramotor3 = 0;
+  Vibramotor4 = 0;
+  Vibramotor5 = 0;
+  Vibramotor6 = 0;
+  MasterValue = 0;
+
+  ledBlinkDelay = 30;
+}
+
+SetMotors();
+
 
 
 delay(10);
 
 ledcounter++;
-if(ledcounter > 100)
+if(ledcounter > ledBlinkDelay)
 {
   ledcounter = 0;
   if(ledtoggle)
@@ -192,6 +221,10 @@ if(ledcounter > 100)
   }
 }
 
+} // end Loop
+
+void SetMotors()
+{
 if(Finger1)
 {
   if( Vibramotor1 >0)
@@ -270,6 +303,6 @@ if(Finger5)
 else
 {
   analogWrite(Motor5Pin, 0);
+}  
 }
 
-}
