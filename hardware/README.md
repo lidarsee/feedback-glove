@@ -1,5 +1,5 @@
 # lidarsee v2 Feedback Glove
-##The wireing looks like this:
+## The wireing looks like this:
 
 ![overview](/docs/images/overview.jpg)
 
