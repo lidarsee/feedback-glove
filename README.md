@@ -38,7 +38,7 @@ Or use the GUI for testing:
 - The power consumption of the vibration motors is quite high, additional capacitors are recommended or limiting the overall power with a software limit
 - Connect the motors to the battery directly
 
-The Library and the GUI is available under GPL 3.0 at:
+The library and the GUI is available under GPL 3.0 at:
 - https://github.com/4ndreas/USAI
 - https://github.com/4ndreas/USAI_GUI
 
