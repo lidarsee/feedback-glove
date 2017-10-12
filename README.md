@@ -45,4 +45,5 @@ The library and the GUI is available under GPL 3.0 at:
 ## License
 
 Hardware License: Creative Commons CC0 https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
 Software license: MIT License
