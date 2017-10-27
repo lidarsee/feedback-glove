@@ -35,7 +35,7 @@ Or use the GUI for testing:
 
 
 ## To Do:
-- The power consumption of the vibration motors is quite high, additional capacitors are recommended or limiting the overall power with a software limit
+- The vibration motors consume a lot of power when starting. To remedy this problem, either the mounting of additional capacitors is recommended or limiting the maximum current by the software.
 - Connect the motors to the battery directly
 
 The library and the GUI is available under GPL 3.0 at:
